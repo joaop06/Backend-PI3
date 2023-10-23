@@ -1,0 +1,52 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// Collection de Usuários
+model User {
+  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  email         String
+  password      String
+  isAdmin       Boolean         @default(false)
+  postsLikedID  String[]        @db.ObjectId
+  posts         Post[]          @relation(fields: [postsLikedID], references: [id])
+  createAt      DateTime        @default(now())
+  updateAt      DateTime        @default(now())
+  FavoritesList FavoritesList[]
+}
+
+// ********************************************************************************* \\
+// Postagens Diversas ('Aleatoridades')
+model Post {
+  id              String          @id @default(auto()) @map("_id") @db.ObjectId
+  user_id         String          @db.ObjectId
+  title           String
+  contentPost     Json
+  typePost        String
+  usersLikeID     String[]        @db.ObjectId
+  users           User[]          @relation(fields: [usersLikeID], references: [id])
+  favoritesListId String[]        @db.ObjectId
+  favoritesLists  FavoritesList[] @relation(fields: [favoritesListId], references: [id])
+
+  createAt DateTime @default(now())
+  updateAt DateTime @default(now())
+}
+
+model FavoritesList {
+  id               String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId           String   @db.ObjectId
+  user_id          User     @relation(fields: [userId], references: [id])
+  postsFavoritesId String[] @db.ObjectId
+  posts            Post[]   @relation(fields: [postsFavoritesId], references: [id])
+  createAt         DateTime @default(now())
+  updateAt         DateTime @default(now())
+}
