@@ -8,8 +8,8 @@
     ],
     "routes": [
         {
-            "source": "/((?!general).*)",
-            "destination": "/"
+            "src": "/((?!general).*)",
+            "dest": "/"
         }
     ]
 }
